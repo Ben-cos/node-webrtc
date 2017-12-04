@@ -42,6 +42,8 @@ install:
       make
       sudo make install
       cd ..
+
+      valgrind --error-exitcode=1 --leak-check=yes --smc-check=all --gen-suppressions=all 2>&1 node -e '' | grep -v '^=' >node.supp
     fi
 
   - |
@@ -69,7 +71,7 @@ script:
   - |
     echo "Running C++ tests with Valgrind (if available)"
     if command -v valgrind 1>/dev/null; then
-      valgrind --error-exitcode=1 --smc-check=all --quiet node bin/test
+      valgrind --error-exitcode=1 --leak-check=yes --smc-check=all --suppressions=node.supp node bin/test
     fi
 
   - |
